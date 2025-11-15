@@ -27,9 +27,6 @@ public class Member {
     private String ageGroup;
 
     private LocalDate registeredAt;
-    private Boolean hasAttendedBefore = false;
-    private Boolean isGraduated = false;
-    private String photoUrl;
 
     @Column(nullable = false)
     private Boolean hasAttendedBefore = false;

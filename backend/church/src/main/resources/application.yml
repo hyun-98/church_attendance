@@ -14,4 +14,8 @@ spring:
         format_sql: true
 
   session:
-    store-type: jdbc
+    store-type: jdbc                   # JDBC 기반 세션 사용
+    jdbc:
+      initialize-schema: always        # DB에 없으면 테이블 생성
+server:
+  port: 8080

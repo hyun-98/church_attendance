@@ -17,7 +17,7 @@ export default function App() {
         {/* 수정용: id 파라미터 전달 */}
         <Route path="/register/:id" element={<Register />} />
         <Route path="/stats" element={<Stats />} />
-        <Route path="/weekly-report" element={<ReportCreate />} />
+        <Route path="/report-create" element={<ReportCreate />} />
         <Route path="/weekly-report/:id" element={<WeeklyReport />} />
       </Routes>
     </Router>

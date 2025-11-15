@@ -26,7 +26,7 @@ export default function Home() {
 
         {/* 보고서 작성 */}
         <Link
-          to="/weekly-report"
+          to="/report-create"
           className="bg-purple-500 hover:bg-purple-600 text-white text-center py-3 px-6 rounded-lg shadow-md transition"
         >
           보고서 작성

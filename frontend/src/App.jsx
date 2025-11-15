@@ -14,7 +14,7 @@ export default function App() {
         <Route path="/attendance" element={<Attendance />} />
         <Route path="/register" element={<Register />} />
         <Route path="/stats" element={<Stats />} />
-        <Route path="/weekly-report" element={<ReportCreate />} />
+        <Route path="/report-create" element={<ReportCreate />} />
         <Route path="/weekly-report/:id" element={<WeeklyReport />} />
       </Routes>
     </Router>

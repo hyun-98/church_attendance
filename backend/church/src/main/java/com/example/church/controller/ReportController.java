@@ -1,48 +1,66 @@
 package com.example.church.controller;
 
 import com.example.church.dto.ReportDTO;
-import com.example.church.model.Member;
 import com.example.church.model.Report;
-import com.example.church.repository.MemberRepository;
-import com.example.church.repository.ReportRepository;
+import com.example.church.service.ReportService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDate;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/reports")
-@CrossOrigin(origins = "http://localhost:5173") // React 개발 서버 CORS 허용
+@RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class ReportController {
 
-    private final ReportRepository reportRepository;
-    private final MemberRepository memberRepository;
+    private final ReportService reportService;
 
-    public ReportController(ReportRepository reportRepository, MemberRepository memberRepository) {
-        this.reportRepository = reportRepository;
-        this.memberRepository = memberRepository;
-    }
-
-    // 교인별 보고서 조회
     @GetMapping("/member/{memberId}")
     public List<Report> getReportsByMember(@PathVariable Long memberId) {
-        return reportRepository.findByMemberId(memberId);
+        return reportService.getReportsByMember(memberId);
     }
 
-    // 보고서 생성
     @PostMapping
-    public Report createReport(@RequestBody ReportDTO dto) {
-        if (dto.memberId == null) throw new RuntimeException("MemberId is required");
+    public ResponseEntity<?> createReport(@RequestBody ReportDTO dto) {
+        try {
+            Report report = new Report();
+            report.setWeek(dto.getWeek());
+            report.setLeader(dto.getLeader());
+            report.setContent(dto.getContent());
+            report.setCreatedAt(dto.getCreatedAt() != null ? dto.getCreatedAt() : java.time.LocalDate.now());
 
-        Member member = memberRepository.findById(dto.memberId)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+            Report saved = reportService.createReport(dto.getMemberId(), report);
+            return ResponseEntity.ok(saved);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
-        Report report = new Report();
-        report.setMember(member);
-        report.setWeek(dto.week);
-        report.setLeader(dto.leader);
-        report.setContent(dto.content);
-        report.setCreatedAt(dto.getCreatedAt() != null ? dto.getCreatedAt() : LocalDate.now());
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateReport(@PathVariable Long id, @RequestBody ReportDTO dto) {
+        try {
+            Report updated = new Report();
+            updated.setWeek(dto.getWeek());
+            updated.setLeader(dto.getLeader());
+            updated.setContent(dto.getContent());
+            updated.setCreatedAt(dto.getCreatedAt());
 
-        return reportRepository.save(report);
+            Report saved = reportService.updateReport(id, updated);
+            return ResponseEntity.ok(saved);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteReport(@PathVariable Long id) {
+        try {
+            reportService.deleteReport(id);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

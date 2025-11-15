@@ -3,7 +3,9 @@ package com.example.church.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,6 +27,9 @@ public class Member {
     private String ageGroup;
 
     private LocalDate registeredAt;
+    private Boolean hasAttendedBefore = false;
+    private Boolean isGraduated = false;
+    private String photoUrl;
 
     @Column(nullable = false)
     private Boolean hasAttendedBefore = false;

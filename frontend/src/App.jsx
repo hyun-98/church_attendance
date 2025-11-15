@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./components/Header";
+
 import Home from "./pages/Home";
 import Attendance from "./pages/Attendance";
 import Register from "./pages/Register";
@@ -9,6 +11,7 @@ import WeeklyReport from "./pages/WeeklyReports";
 export default function App() {
   return (
     <Router>
+      <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/attendance" element={<Attendance />} />

@@ -20,8 +20,9 @@ export default function Register() {
   // 수정 모드일 경우 기존 데이터 불러오기
   useEffect(() => {
     if (id) {
-      axios.get(`http://localhost:8080/api/members/${id}`)
-        .then(res => {
+      axios
+        .get(`http://localhost:8080/api/members/${id}`)
+        .then((res) => {
           const data = res.data;
           setForm({
             name: data.name || "",
@@ -30,11 +31,11 @@ export default function Register() {
             hasAttended: data.hasAttendedBefore || false,
             registeredAt: data.registeredAt || "",
             ageGroup: data.ageGroup || "",
-            photo: null
+            photo: null,
           });
           setExistingPhoto(data.photoUrl ? `http://localhost:8080${data.photoUrl}` : null);
         })
-        .catch(err => console.error(err));
+        .catch((err) => console.error(err));
     }
   }, [id]);
 
@@ -42,10 +43,10 @@ export default function Register() {
     const { name, value, type, checked, files } = e.target;
     if (type === "file") {
       const file = files[0];
-      setForm(prev => ({ ...prev, photo: file }));
+      setForm((prev) => ({ ...prev, photo: file }));
       setPreview(file ? URL.createObjectURL(file) : null);
     } else {
-      setForm(prev => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
+      setForm((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
     }
   };
 
@@ -67,21 +68,24 @@ export default function Register() {
       formData.append("ageGroup", form.ageGroup);
       if (form.photo) formData.append("photo", form.photo);
 
+      let res;
       if (id) {
         // 수정
-        await axios.put(`http://localhost:8080/api/members/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" }
+        res = await axios.put(`http://localhost:8080/api/members/${id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
         });
         alert("수정 완료!");
       } else {
         // 새 등록
-        await axios.post("http://localhost:8080/api/members", formData, {
-          headers: { "Content-Type": "multipart/form-data" }
+        res = await axios.post("http://localhost:8080/api/members", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
         });
         alert("등록 완료!");
       }
 
-      navigate("/attendance");
+      // 수정/등록 완료 후 Attendance로 state 전달
+      navigate("/attendance", { state: { updatedMember: res.data } });
+
     } catch (err) {
       console.error(err);
       alert("저장 실패!");

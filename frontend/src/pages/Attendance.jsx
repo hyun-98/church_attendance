@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
 
 export default function Attendance() {
   const [members, setMembers] = useState([]);
-  const [previewImg, setPreviewImg] = useState(null); 
+  const [previewImg, setPreviewImg] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // -------------------- 멤버 가져오기 --------------------
   const fetchMembers = async () => {
     try {
       const res = await axios.get("http://localhost:8080/api/members");
-      const formatted = res.data.map(m => ({
+      const formatted = res.data.map((m) => ({
         ...m,
-        registeredAt: m.registeredAt ? m.registeredAt.split("T")[0] : "-"
+        registeredAt: m.registeredAt ? m.registeredAt.split("T")[0] : "-",
       }));
       setMembers(formatted);
     } catch (err) {
@@ -21,10 +24,22 @@ export default function Attendance() {
     }
   };
 
+  // -------------------- 수정 후 state 반영 --------------------
   useEffect(() => {
     fetchMembers();
   }, []);
 
+  useEffect(() => {
+    // Register.jsx에서 navigate 시 전달된 updatedMember가 있으면 기존 배열에서 갱신
+    if (location.state && location.state.updatedMember) {
+      const updated = location.state.updatedMember;
+      setMembers((prev) =>
+        prev.map((m) => (m.id === updated.id ? { ...m, ...updated } : m))
+      );
+    }
+  }, [location.state]);
+
+  // -------------------- 이미지 모달 --------------------
   const openModal = (imgUrl) => {
     setPreviewImg(imgUrl);
     setShowModal(true);
@@ -35,17 +50,19 @@ export default function Attendance() {
     setShowModal(false);
   };
 
+  // -------------------- 삭제 --------------------
   const handleDelete = async (id) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
       await axios.delete(`http://localhost:8080/api/members/${id}`);
-      fetchMembers(); // 삭제 후 리스트 갱신
+      setMembers((prev) => prev.filter((m) => m.id !== id));
     } catch (err) {
       console.error(err);
       alert("삭제 실패!");
     }
   };
 
+  // -------------------- 렌더 --------------------
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-6xl mx-auto">
@@ -66,6 +83,7 @@ export default function Attendance() {
           <table className="w-full min-w-[700px] border-collapse">
             <thead className="bg-blue-100">
               <tr>
+                <th className="p-3 border text-left">수료 여부</th>
                 <th className="p-3 border text-left">사진</th>
                 <th className="p-3 border text-left">이름</th>
                 <th className="p-3 border text-left">또래</th>
@@ -77,8 +95,37 @@ export default function Attendance() {
             </thead>
 
             <tbody>
-              {members.map(member => (
+              {members.map((member) => (
                 <tr key={member.id} className="text-center border-b hover:bg-gray-50">
+
+                  {/* 수료 여부 버튼 */}
+                  <td className="p-3 border text-center">
+                    <button
+                      className={`px-3 py-1 rounded-lg text-white transition ${
+                        member.isGraduated ? "bg-green-500 hover:bg-green-600" : "bg-gray-400 hover:bg-gray-500"
+                      }`}
+                      onClick={async () => {
+                        try {
+                          await axios.put(
+                            `http://localhost:8080/api/members/${member.id}`,
+                            null,
+                            { params: { isGraduated: !member.isGraduated } }
+                          );
+                          setMembers((prev) =>
+                            prev.map((m) =>
+                              m.id === member.id ? { ...m, isGraduated: !m.isGraduated } : m
+                            )
+                          );
+                        } catch (err) {
+                          console.error(err);
+                          alert("토글 실패!");
+                        }
+                      }}
+                    >
+                      {member.isGraduated ? "수료" : "미수료"}
+                    </button>
+                  </td>
+
                   {/* 사진 */}
                   <td className="p-3 border text-left">
                     <img
@@ -130,10 +177,10 @@ export default function Attendance() {
                       삭제
                     </button>
                   </td>
+
                 </tr>
               ))}
             </tbody>
-
           </table>
         </div>
       </div>
@@ -148,7 +195,7 @@ export default function Attendance() {
             src={previewImg}
             alt="미리보기"
             className="max-h-[80vh] max-w-[80vw] rounded-lg shadow-lg"
-            onClick={e => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
           />
         </div>
       )}

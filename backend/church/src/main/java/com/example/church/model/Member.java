@@ -15,6 +15,7 @@ public class Member {
     private Long id;
 
     private String name;
+    private LocalDate birthDate;
     private String phone;
     private String ageGroup;
     private Boolean hasAttendedBefore;

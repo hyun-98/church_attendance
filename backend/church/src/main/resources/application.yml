@@ -14,18 +14,12 @@ spring:
         format_sql: true
 
   session:
-    store-type: jdbc                   # JDBC 기반 세션 사용
-    jdbc:
-      initialize-schema: always        # DB에 없으면 테이블 생성
+    store-type: jdbc
 
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
-
-
-server:
-  port: 8080
+      max-file-size: 20MB
+      max-request-size: 20MB
 
 file:
-  upload-dir: C:/church/uploads  # Windows 예시, 디렉토리 만들어 두세요
+  upload-dir: C:/church/uploads

@@ -8,19 +8,29 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
+@Table(name = "member")
 public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
+
     private LocalDate birthDate;
+
     private String phone;
+
     private String ageGroup;
-    private Boolean hasAttendedBefore;
-    private String photoUrl;
+
     private LocalDate registeredAt;
 
-    private Boolean isPresent = false; // 출석 여부 기본값 false
+    @Column(nullable = false)
+    private Boolean hasAttendedBefore = false;
+
+    @Column(nullable = false)
+    private Boolean isGraduated = false;
+
+    private String photoUrl;
 }

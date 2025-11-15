@@ -4,11 +4,17 @@ import { Link } from "react-router-dom";
 
 export default function Attendance() {
   const [members, setMembers] = useState([]);
+  const [previewImg, setPreviewImg] = useState(null); // 확대 이미지
+  const [showModal, setShowModal] = useState(false);
 
   const fetchMembers = async () => {
     try {
       const res = await axios.get("http://localhost:8080/api/members");
-      setMembers(res.data);
+      const formatted = res.data.map(m => ({
+        ...m,
+        registeredAt: m.registeredAt ? m.registeredAt.split("T")[0] : "-"
+      }));
+      setMembers(formatted);
     } catch (err) {
       console.error(err);
     }
@@ -17,6 +23,16 @@ export default function Attendance() {
   useEffect(() => {
     fetchMembers();
   }, []);
+
+  const openModal = (imgUrl) => {
+    setPreviewImg(imgUrl);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setPreviewImg(null);
+    setShowModal(false);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -48,32 +64,26 @@ export default function Attendance() {
             </thead>
 
             <tbody>
-              {members.map((member) => (
+              {members.map(member => (
                 <tr key={member.id} className="text-center border-b hover:bg-gray-50">
-
                   {/* 사진 */}
                   <td className="p-3 border text-left">
                     <img
-                      src={member.photoUrl || "/default-profile.png"}
-                      alt="profile"
-                      className="w-14 h-14 rounded-full mx-auto md:mx-0 object-cover border"
+                      src={member.photoUrl ? `http://localhost:8080${member.photoUrl}` : "/default-profile.png"}
+                      alt={member.name}
+                      onClick={() => member.photoUrl && openModal(`http://localhost:8080${member.photoUrl}`)}
+                      className="w-14 h-14 rounded-full mx-auto md:mx-0 object-cover border cursor-pointer hover:opacity-80 transition"
                     />
                   </td>
 
                   {/* 이름 */}
-                  <td className="p-3 border text-left font-medium text-gray-800">
-                    {member.name}
-                  </td>
+                  <td className="p-3 border text-left font-medium text-gray-800">{member.name || "-"}</td>
 
                   {/* 또래 */}
-                  <td className="p-3 border text-left text-gray-600">
-                    {member.ageGroup || "-"}
-                  </td>
+                  <td className="p-3 border text-left text-gray-600">{member.ageGroup || "-"}</td>
 
                   {/* 등록일 */}
-                  <td className="p-3 border text-left text-gray-600">
-                    {member.registeredAt || "-"}
-                  </td>
+                  <td className="p-3 border text-left text-gray-600">{member.registeredAt}</td>
 
                   {/* 주차보고서 */}
                   <td className="p-3 border text-center">
@@ -98,6 +108,21 @@ export default function Attendance() {
           </table>
         </div>
       </div>
+
+      {/* 이미지 미리보기 모달 */}
+      {showModal && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
+          onClick={closeModal}
+        >
+          <img
+            src={previewImg}
+            alt="미리보기"
+            className="max-h-[80vh] max-w-[80vw] rounded-lg shadow-lg"
+            onClick={e => e.stopPropagation()} // 이미지 클릭 시 모달 닫기 방지
+          />
+        </div>
+      )}
     </div>
   );
 }

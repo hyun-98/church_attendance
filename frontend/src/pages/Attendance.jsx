@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Attendance() {
   const [members, setMembers] = useState([]);
-  const [previewImg, setPreviewImg] = useState(null); // 확대 이미지
+  const [previewImg, setPreviewImg] = useState(null); 
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
   const fetchMembers = async () => {
     try {
@@ -34,6 +35,17 @@ export default function Attendance() {
     setShowModal(false);
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("정말 삭제하시겠습니까?")) return;
+    try {
+      await axios.delete(`http://localhost:8080/api/members/${id}`);
+      fetchMembers(); // 삭제 후 리스트 갱신
+    } catch (err) {
+      console.error(err);
+      alert("삭제 실패!");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-6xl mx-auto">
@@ -60,6 +72,7 @@ export default function Attendance() {
                 <th className="p-3 border text-left">등록일</th>
                 <th className="p-3 border text-center">주차보고서</th>
                 <th className="p-3 border text-center">목장편성</th>
+                <th className="p-3 border text-center">관리</th>
               </tr>
             </thead>
 
@@ -101,6 +114,22 @@ export default function Attendance() {
                       편성
                     </button>
                   </td>
+
+                  {/* 관리 버튼 */}
+                  <td className="p-3 border text-center space-x-2">
+                    <button
+                      className="bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600 transition"
+                      onClick={() => navigate(`/register/${member.id}`)}
+                    >
+                      수정
+                    </button>
+                    <button
+                      className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition"
+                      onClick={() => handleDelete(member.id)}
+                    >
+                      삭제
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -119,7 +148,7 @@ export default function Attendance() {
             src={previewImg}
             alt="미리보기"
             className="max-h-[80vh] max-w-[80vw] rounded-lg shadow-lg"
-            onClick={e => e.stopPropagation()} // 이미지 클릭 시 모달 닫기 방지
+            onClick={e => e.stopPropagation()}
           />
         </div>
       )}

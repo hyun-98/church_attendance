@@ -12,7 +12,10 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/attendance" element={<Attendance />} />
+        {/* 등록용 */}
         <Route path="/register" element={<Register />} />
+        {/* 수정용: id 파라미터 전달 */}
+        <Route path="/register/:id" element={<Register />} />
         <Route path="/stats" element={<Stats />} />
         <Route path="/weekly-report" element={<ReportCreate />} />
         <Route path="/weekly-report/:id" element={<WeeklyReport />} />

@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     // 전화번호로 조회 예시
     boolean existsByPhone(String phone);
+
 }

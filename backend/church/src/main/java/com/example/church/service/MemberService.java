@@ -4,6 +4,7 @@ import com.example.church.dto.MemberDTO;
 import com.example.church.model.Member;
 import com.example.church.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,7 +22,7 @@ public class MemberService {
 
     // -------------------- 전체 조회 --------------------
     public List<Member> getAllMembers() {
-        return memberRepository.findAll();
+        return memberRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
     // -------------------- 단건 조회 --------------------

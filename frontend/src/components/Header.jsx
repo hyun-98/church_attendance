@@ -40,7 +40,7 @@ export default function Header() {
         
           
           <NavLink
-            to="/weekly-report"
+            to="/report-create"
             className={({ isActive }) => (isActive ? activeStyle : navItem)}
           >
             주차 보고서 작성

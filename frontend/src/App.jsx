@@ -19,9 +19,14 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         {/* 수정용: id 파라미터 전달 */}
         <Route path="/register/:id" element={<Register />} />
-        <Route path="/stats" element={<Stats />} />
+
+        
+        {/* 주차보고서 작성용 */}
         <Route path="/report-create" element={<ReportCreate />} />
+        {/* 수정용: id 파라미터 전달 */}
         <Route path="/weekly-report/:id" element={<WeeklyReport />} />
+
+        <Route path="/stats" element={<Stats />} />
       </Routes>
     </Router>
   );

@@ -1,6 +1,9 @@
 #!/bin/bash
 # start.sh
 
+# backend/church로 이동
+cd backend/church
+
 # 1. Gradle 빌드 (테스트 제외)
 ./gradlew build -x test
 

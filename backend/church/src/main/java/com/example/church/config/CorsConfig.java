@@ -16,7 +16,7 @@ public class CorsConfig {
                 registry.addMapping("/**")
                         .allowedOrigins(
                                 "http://localhost:5173",       // 로컬 개발용
-                                "https://my-church.vercel.app" // 배포용 Vercel 도메인
+                                "https://church-attendance-d7ygxht21-hyun-ws-projects.vercel.app/" // 배포용 Vercel 도메인
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
                         .allowedHeaders("*")

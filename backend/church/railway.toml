@@ -1,6 +1,0 @@
-[build]
-builder = "nixpacks"
-
-[env]
-# JDK 17 설치
-JAVA_VERSION = "17"

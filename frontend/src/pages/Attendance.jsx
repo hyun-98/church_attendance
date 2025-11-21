@@ -10,10 +10,12 @@ export default function Attendance() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const API_URL = import.meta.env.VITE_API_URL; // ✅ Vite 환경변수
+
   // -------------------- 멤버 가져오기 --------------------
   const fetchMembers = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/members");
+      const res = await axios.get(`${API_URL}/api/members`);
       const formatted = res.data.map((m) => ({
         ...m,
         registeredAt: m.registeredAt ? m.registeredAt.split("T")[0] : "-",
@@ -54,7 +56,7 @@ export default function Attendance() {
   const handleDelete = async (id) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
-      await axios.delete(`http://localhost:8080/api/members/${id}`);
+      await axios.delete(`${API_URL}/api/members/${id}`);
       setMembers((prev) => prev.filter((m) => m.id !== id));
     } catch (err) {
       console.error(err);
@@ -107,7 +109,7 @@ export default function Attendance() {
                       onClick={async () => {
                         try {
                           await axios.put(
-                            `http://localhost:8080/api/members/${member.id}`,
+                            `${API_URL}/api/members/${member.id}`,
                             null,
                             { params: { isGraduated: !member.isGraduated } }
                           );
@@ -129,9 +131,9 @@ export default function Attendance() {
                   {/* 사진 */}
                   <td className="p-3 border text-left">
                     <img
-                      src={member.photoUrl ? `http://localhost:8080${member.photoUrl}` : "/default-profile.png"}
+                      src={member.photoUrl ? `${API_URL}${member.photoUrl}` : "/default-profile.png"}
                       alt={member.name}
-                      onClick={() => member.photoUrl && openModal(`http://localhost:8080${member.photoUrl}`)}
+                      onClick={() => member.photoUrl && openModal(`${API_URL}${member.photoUrl}`)}
                       className="w-14 h-14 rounded-full mx-auto md:mx-0 object-cover border cursor-pointer hover:opacity-80 transition"
                     />
                   </td>

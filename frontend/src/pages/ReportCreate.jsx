@@ -13,9 +13,11 @@ export default function ReportCreate() {
   });
 
   const navigate = useNavigate();
+  
+  const API_URL = import.meta.env.VITE_API_URL; // ✅ Vite 환경변수
 
   useEffect(() => {
-    axios.get("http://localhost:8080/api/members")
+    axios.get(`${API_URL}/api/members`)
       .then(res => setMembers(res.data))
       .catch(err => console.error(err));
   }, []);
@@ -31,7 +33,7 @@ export default function ReportCreate() {
     if (!report.createdAt) report.createdAt = new Date().toISOString().split("T")[0];
 
     try {
-      await axios.post("http://localhost:8080/api/reports", {
+      await axios.post(`${API_URL}/api/reports`, {
         ...report,
         memberId: parseInt(selectedMember),
       });

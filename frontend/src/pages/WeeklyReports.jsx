@@ -6,15 +6,17 @@ export default function WeeklyReport() {
   const { id } = useParams(); // memberId
   const [reports, setReports] = useState([]);
   const [member, setMember] = useState({});
+  
+  const API_URL = import.meta.env.VITE_API_URL; // ✅ Vite 환경변수
 
   useEffect(() => {
     // 교인 정보 가져오기
-    axios.get(`http://localhost:8080/api/members/${id}`)
+    axios.get(`${API_URL}/api/members/${id}`)
       .then(res => setMember(res.data))
       .catch(err => console.error(err));
 
     // 해당 교인 보고서 가져오기
-    axios.get(`http://localhost:8080/api/reports/member/${id}`)
+    axios.get(`${API_URL}/api/reports/member/${id}`)
       .then(res => setReports(res.data))
       .catch(err => console.error(err));
   }, [id]);

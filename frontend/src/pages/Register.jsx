@@ -5,6 +5,9 @@ import axios from "axios";
 export default function Register() {
   const navigate = useNavigate();
   const { id } = useParams(); // 수정 모드용
+
+  const API_URL = import.meta.env.VITE_API_URL; // ✅ Vite 환경변수
+
   const [form, setForm] = useState({
     name: "",
     birthDate: "",
@@ -21,7 +24,7 @@ export default function Register() {
   useEffect(() => {
     if (id) {
       axios
-        .get(`http://localhost:8080/api/members/${id}`)
+        .get(`${API_URL}/api/members/${id}`)
         .then((res) => {
           const data = res.data;
           setForm({
@@ -33,7 +36,7 @@ export default function Register() {
             ageGroup: data.ageGroup || "",
             photo: null,
           });
-          setExistingPhoto(data.photoUrl ? `http://localhost:8080${data.photoUrl}` : null);
+          setExistingPhoto(data.photoUrl ? `${API_URL}${data.photoUrl}` : null);
         })
         .catch((err) => console.error(err));
     }
@@ -71,13 +74,13 @@ export default function Register() {
       let res;
       if (id) {
         // 수정
-        res = await axios.put(`http://localhost:8080/api/members/${id}`, formData, {
+        res = await axios.put(`${API_URL}/api/members/${id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         alert("수정 완료!");
       } else {
         // 새 등록
-        res = await axios.post("http://localhost:8080/api/members", formData, {
+        res = await axios.post(`${API_URL}/api/members`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         alert("등록 완료!");

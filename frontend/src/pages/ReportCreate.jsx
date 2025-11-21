@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api/axios"; 
+
 
 export default function ReportCreate() {
   const [members, setMembers] = useState([]);
@@ -17,7 +18,7 @@ export default function ReportCreate() {
   const API_URL = import.meta.env.VITE_API_URL; // ✅ Vite 환경변수
 
   useEffect(() => {
-    axios.get(`${API_URL}/api/members`)
+    api.get(`/api/members`)
       .then(res => setMembers(res.data))
       .catch(err => console.error(err));
   }, []);
@@ -33,7 +34,7 @@ export default function ReportCreate() {
     if (!report.createdAt) report.createdAt = new Date().toISOString().split("T")[0];
 
     try {
-      await axios.post(`${API_URL}/api/reports`, {
+      await api.post(`/api/reports`, {
         ...report,
         memberId: parseInt(selectedMember),
       });

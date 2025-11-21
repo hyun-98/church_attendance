@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api/axios"; 
 
 export default function Attendance() {
   const [members, setMembers] = useState([]);
@@ -15,14 +15,14 @@ export default function Attendance() {
   // -------------------- 멤버 가져오기 --------------------
   const fetchMembers = async () => {
     try {
-      const res = await axios.get(`${API_URL}/api/members`);
+      const res = await api.get("/api/members");
       const formatted = res.data.map((m) => ({
         ...m,
         registeredAt: m.registeredAt ? m.registeredAt.split("T")[0] : "-",
       }));
       setMembers(formatted);
     } catch (err) {
-      console.error(err);
+      console.error(err.response?.status, err.response?.data);
     }
   };
 
@@ -56,7 +56,7 @@ export default function Attendance() {
   const handleDelete = async (id) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
-      await axios.delete(`${API_URL}/api/members/${id}`);
+      await api.delete(`/api/members/${id}`);
       setMembers((prev) => prev.filter((m) => m.id !== id));
     } catch (err) {
       console.error(err);
@@ -108,8 +108,8 @@ export default function Attendance() {
                       }`}
                       onClick={async () => {
                         try {
-                          await axios.put(
-                            `${API_URL}/api/members/${member.id}`,
+                          await api.put(
+                            `/api/members/${member.id}`,
                             null,
                             { params: { isGraduated: !member.isGraduated } }
                           );

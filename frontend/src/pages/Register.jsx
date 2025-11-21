@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../api/axios"; 
 
 export default function Register() {
   const navigate = useNavigate();
@@ -23,8 +23,8 @@ export default function Register() {
   // 수정 모드일 경우 기존 데이터 불러오기
   useEffect(() => {
     if (id) {
-      axios
-        .get(`${API_URL}/api/members/${id}`)
+      api
+        .get(`/api/members/${id}`)
         .then((res) => {
           const data = res.data;
           setForm({
@@ -36,7 +36,7 @@ export default function Register() {
             ageGroup: data.ageGroup || "",
             photo: null,
           });
-          setExistingPhoto(data.photoUrl ? `${API_URL}${data.photoUrl}` : null);
+          setExistingPhoto(data.photoUrl ? `${data.photoUrl}` : null);
         })
         .catch((err) => console.error(err));
     }
@@ -74,13 +74,13 @@ export default function Register() {
       let res;
       if (id) {
         // 수정
-        res = await axios.put(`${API_URL}/api/members/${id}`, formData, {
+        res = await api.put(`/api/members/${id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         alert("수정 완료!");
       } else {
         // 새 등록
-        res = await axios.post(`${API_URL}/api/members`, formData, {
+        res = await api.post(`/api/members`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         alert("등록 완료!");

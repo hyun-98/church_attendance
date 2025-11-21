@@ -1,8 +1,14 @@
+#spring:
+#  datasource:
+#    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}
+#    username: ${PGUSER}
+#    password: ${PGPASSWORD}
+#    driver-class-name: org.postgresql.Driver
 spring:
   datasource:
-    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}
-    username: ${PGUSER}
-    password: ${PGPASSWORD}
+    url: jdbc:postgresql://postgres:5432/churchdb
+    username: postgres
+    password: password
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -14,12 +20,15 @@ spring:
         format_sql: true
 
   session:
-    store-type: jdbc
-    jdbc:
-      initialize-schema: always  # 또는 embedded
+    store-type: none
+
+#    store-type: jdbc
+#    jdbc:
+#      initialize-schema: always  # 또는 embedded
 
   server:
-    port: ${PORT:8080}
+    port : 8080
+#    port: ${PORT:8080}
 
   servlet:
     multipart:

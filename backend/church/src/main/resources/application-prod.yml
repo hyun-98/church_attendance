@@ -3,10 +3,15 @@ spring:
     activate:
       on-profile: prod
 
+#  datasource:
+#    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${POSTGRES_DB}
+#    username: ${PGUSER}
+#    password: ${PGPASSWORD}
+#    driver-class-name: org.postgresql.Driver
   datasource:
-    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${POSTGRES_DB}
-    username: ${PGUSER}
-    password: ${PGPASSWORD}
+    url: jdbc:postgresql://postgres.railway.internal:5432/railway
+    username: postgres
+    password: FrYXcLvdcsVDMkdZAZynJtRHfVDRVThz
     driver-class-name: org.postgresql.Driver
 
   jpa:

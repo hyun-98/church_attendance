@@ -1,4 +1,7 @@
 spring:
+  profiles:
+    active: local  # 기본 프로파일을 local로 설정
+
   datasource:
     url: jdbc:postgresql://localhost:5432/churchdb
     username: postgres

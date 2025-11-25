@@ -153,7 +153,7 @@ export default function Attendance() {
                       to={`/weekly-report/${member.id}`}
                       className="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition"
                     >
-                      확인 / 작성
+                      주차보고서
                     </Link>
                   </td>
 

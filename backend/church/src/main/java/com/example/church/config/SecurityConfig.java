@@ -16,11 +16,24 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())); // CORS 설정 통합
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/",                 // 메인 페이지
+                                "/index.html",       // 정적 index.html
+                                "/assets/**",        // Vite 빌드 assets
+                                "/css/**",
+                                "/js/**",
+                                "/images/**"
+                        ).permitAll()
+                        .anyRequest().permitAll()  // API 포함 전체 허용
+                )
+                .formLogin(form -> form.disable())   // 기본 로그인 폼 비활성화
+                .httpBasic(basic -> basic.disable()); // Http Basic 비활성화
 
         return http.build();
     }
@@ -29,8 +42,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
-                "http://localhost:5173", // 로컬 개발용
-                "https://church-attendance-d7ygxht21-hyun-ws-projects.vercel.app" // 배포용 Vercel 도메인
+                "http://localhost:5173",
+                "https://church-attendance-d7ygxht21-hyun-ws-projects.vercel.app"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));

@@ -27,4 +27,6 @@ spring:
       max-request-size: 20MB
 
 file:
-  upload-dir: /tmp/uploads
+  upload-dir: C:/church/uploads # 로컬
+
+#  upload-dir: /tmp/uploads # Railway 배포

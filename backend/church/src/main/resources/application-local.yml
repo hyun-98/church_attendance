@@ -1,0 +1,5 @@
+spring:
+  profiles: local
+
+file:
+  upload-dir: C:/church/uploads

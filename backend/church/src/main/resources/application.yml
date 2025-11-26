@@ -30,4 +30,4 @@ spring:
       max-request-size: 20MB
 
 file:
-  upload-dir: ${UPLOAD_DIR:C:/church/uploads}
+  upload-dir: C:/church/uploads

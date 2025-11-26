@@ -25,7 +25,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/", "/index.html", "/favicon.ico",
-                                "/assets/**", "/js/**", "/css/**", "/images/**"
+                                "/assets/**", "/js/**", "/css/**", "/images/**",
+                                "/api/members"  // 추가: 인증 없이 접근 허용
                         ).permitAll()  // 정적 리소스 허용
                         .anyRequest().authenticated() // API는 인증 필요 시
                 )

@@ -17,7 +17,6 @@ import java.util.List;
 @EnableWebSecurity   // 🔥 SecurityConfig 강제 활성화
 public class SecurityConfig {
 
-    // 🔹 Security 필터 체인
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -25,7 +24,11 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // 모든 요청 허용
+                        .requestMatchers(
+                                "/", "/index.html", "/favicon.ico",
+                                "/assets/**", "/js/**", "/css/**", "/images/**"
+                        ).permitAll()  // 정적 리소스 허용
+                        .anyRequest().authenticated() // API는 인증 필요 시
                 )
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable());
@@ -33,18 +36,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // 🔹 정적 리소스 필터 제외
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers(
-                "/", "/index.html",
-                "/assets/**",
-                "/js/**",
-                "/css/**",
-                "/images/**",
-                "/favicon.ico"
-        );
-    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

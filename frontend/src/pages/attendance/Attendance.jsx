@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getMembers, updateMember, deleteMember } from "/src/api/api"; // ✅ api.js import
+import { getMembers, updateMember, deleteMember, API_URL } from "/src/api/api"; // ✅ api.js import
 
 export default function Attendance() {
   const [members, setMembers] = useState([]);

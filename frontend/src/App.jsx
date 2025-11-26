@@ -2,11 +2,12 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 
 import Home from "./pages/Home";
-import Attendance from "./pages/Attendance";
+import Attendance from "./pages/attendance/Attendance";
 import Register from "./pages/Register";
 import Stats from "./pages/Stats";
 import ReportCreate from "./pages/ReportCreate";
-import WeeklyReport from "./pages/WeeklyReports";
+import WeeklyReport from "./pages/attendance/WeeklyReports";
+import EditReport from "./pages/attendance/EditReport";
 
 export default function App() {
   return (
@@ -14,7 +15,12 @@ export default function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
+
         <Route path="/attendance" element={<Attendance />} />
+        {/* 주차 보고서 확인용: id 파라미터 전달 */}
+        <Route path="/weekly-report/:id" element={<WeeklyReport />} />
+        <Route path="/reports/edit/:id" element={<EditReport />} />
+
         {/* 등록용 */}
         <Route path="/register" element={<Register />} />
         {/* 수정용: id 파라미터 전달 */}
@@ -23,8 +29,6 @@ export default function App() {
         
         {/* 주차보고서 작성용 */}
         <Route path="/report-create" element={<ReportCreate />} />
-        {/* 수정용: id 파라미터 전달 */}
-        <Route path="/weekly-report/:id" element={<WeeklyReport />} />
 
         <Route path="/stats" element={<Stats />} />
       </Routes>

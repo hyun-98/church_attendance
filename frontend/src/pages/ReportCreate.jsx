@@ -38,7 +38,7 @@ export default function ReportCreate() {
         memberId: parseInt(selectedMember),
       });
       alert("보고서 저장 완료!");
-      navigate("/attendance");
+      navigate(`/weekly-report/${selectedMember}`);
     } catch (err) {
       console.error(err);
       alert("저장 실패");

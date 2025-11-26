@@ -1,8 +1,11 @@
 spring:
+  profiles:
+    active: local  # 기본 프로파일을 local로 설정
+
   datasource:
-    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}
-    username: ${PGUSER}
-    password: ${PGPASSWORD}
+    url: jdbc:postgresql://localhost:5432/churchdb
+    username: postgres
+    password: password
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -27,4 +30,4 @@ spring:
       max-request-size: 20MB
 
 file:
-  upload-dir: /tmp/uploads
+  upload-dir: C:/church/uploads

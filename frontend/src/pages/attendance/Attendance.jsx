@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { getMembers, updateMember, deleteMember, API_URL } from "/src/api/api"; // ✅ api.js import
 
 export default function Attendance() {
   const [members, setMembers] = useState([]);
@@ -10,13 +10,11 @@ export default function Attendance() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const API_URL = import.meta.env.VITE_API_URL; // ✅ Vite 환경변수
-
   // -------------------- 멤버 가져오기 --------------------
   const fetchMembers = async () => {
     try {
-      const res = await axios.get(`${API_URL}/api/members`);
-      const formatted = res.data.map((m) => ({
+      const res = await getMembers(); // api.js 함수 사용
+      const formatted = res.map((m) => ({
         ...m,
         registeredAt: m.registeredAt ? m.registeredAt.split("T")[0] : "-",
       }));
@@ -32,7 +30,6 @@ export default function Attendance() {
   }, []);
 
   useEffect(() => {
-    // Register.jsx에서 navigate 시 전달된 updatedMember가 있으면 기존 배열에서 갱신
     if (location.state && location.state.updatedMember) {
       const updated = location.state.updatedMember;
       setMembers((prev) =>
@@ -56,7 +53,7 @@ export default function Attendance() {
   const handleDelete = async (id) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
-      await axios.delete(`${API_URL}/api/members/${id}`);
+      await deleteMember(id); // api.js 함수 사용
       setMembers((prev) => prev.filter((m) => m.id !== id));
     } catch (err) {
       console.error(err);
@@ -64,11 +61,25 @@ export default function Attendance() {
     }
   };
 
+  // -------------------- 수료 토글 --------------------
+  const toggleGraduated = async (member) => {
+    try {
+      await updateMember(member.id, { isGraduated: !member.isGraduated }); // api.js 함수 사용
+      setMembers((prev) =>
+        prev.map((m) =>
+          m.id === member.id ? { ...m, isGraduated: !member.isGraduated } : m
+        )
+      );
+    } catch (err) {
+      console.error(err);
+      alert("토글 실패!");
+    }
+  };
+
   // -------------------- 렌더 --------------------
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-6xl mx-auto">
-
         {/* 헤더 */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
           <h1 className="text-3xl font-bold text-gray-800">📋 출석부 관리</h1>
@@ -99,30 +110,13 @@ export default function Attendance() {
             <tbody>
               {members.map((member) => (
                 <tr key={member.id} className="text-center border-b hover:bg-gray-50">
-
                   {/* 수료 여부 버튼 */}
                   <td className="p-3 border text-center">
                     <button
                       className={`px-3 py-1 rounded-lg text-white transition ${
                         member.isGraduated ? "bg-green-500 hover:bg-green-600" : "bg-gray-400 hover:bg-gray-500"
                       }`}
-                      onClick={async () => {
-                        try {
-                          await axios.put(
-                            `${API_URL}/api/members/${member.id}`,
-                            null,
-                            { params: { isGraduated: !member.isGraduated } }
-                          );
-                          setMembers((prev) =>
-                            prev.map((m) =>
-                              m.id === member.id ? { ...m, isGraduated: !m.isGraduated } : m
-                            )
-                          );
-                        } catch (err) {
-                          console.error(err);
-                          alert("토글 실패!");
-                        }
-                      }}
+                      onClick={() => toggleGraduated(member)}
                     >
                       {member.isGraduated ? "수료" : "미수료"}
                     </button>
@@ -131,7 +125,7 @@ export default function Attendance() {
                   {/* 사진 */}
                   <td className="p-3 border text-left">
                     <img
-                      src={member.photoUrl ? `${API_URL}${member.photoUrl}` : "/default-profile.png"}
+                      src={member.photoUrl ? `${member.photoUrl.startsWith("http") ? member.photoUrl : `${API_URL}${member.photoUrl}`}` : "/default-profile.png"}
                       alt={member.name}
                       onClick={() => member.photoUrl && openModal(`${API_URL}${member.photoUrl}`)}
                       className="w-14 h-14 rounded-full mx-auto md:mx-0 object-cover border cursor-pointer hover:opacity-80 transition"
@@ -153,7 +147,7 @@ export default function Attendance() {
                       to={`/weekly-report/${member.id}`}
                       className="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition"
                     >
-                      확인 / 작성
+                      주차보고서
                     </Link>
                   </td>
 
@@ -179,7 +173,6 @@ export default function Attendance() {
                       삭제
                     </button>
                   </td>
-
                 </tr>
               ))}
             </tbody>

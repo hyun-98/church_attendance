@@ -3,8 +3,7 @@ import { Link } from "react-router-dom";
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-white">
-      <h1 className="text-4xl font-bold text-blue-700 mb-10">📖 교회 출석부</h1>
-
+      <h1 className="text-4xl font-bold text-blue-700 mb-10">📖 청년 1부 새가족마을 출석부</h1>
       <div className="grid gap-5 w-64">
 
         {/* 출석부 관리 */}
